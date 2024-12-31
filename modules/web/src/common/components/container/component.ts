@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {Component, Input, OnChanges} from '@angular/core';
+import {MatTableDataSource} from '@angular/material/table';
 import {ConfigMapKeyRef, Container, EnvVar, SecretKeyRef} from '@api/root.api';
 import {Status, StatusClass} from '@common/components/resourcelist/statuses';
 import {DecoderService} from '@common/services/global/decoder';
@@ -28,6 +29,9 @@ export class ContainerCardComponent implements OnChanges {
   @Input() container: Container;
   @Input() namespace: string;
   @Input() initialized: boolean;
+
+  dataSource: MatTableDataSource<EnvVar>;
+  displayedColumns: string[] = ['name', 'value'];
 
   constructor(
     private readonly state_: KdStateService,
@@ -68,6 +72,7 @@ export class ContainerCardComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.container.env = this.container.env.sort((a, b) => a.name.localeCompare(b.name));
+    this.dataSource = new MatTableDataSource<EnvVar>(this.container.env);
   }
 
   isSecret(envVar: EnvVar): boolean {

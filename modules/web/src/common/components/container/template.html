@@ -163,95 +163,99 @@ limitations under the License.
       Environment Variables
     </div>
 
-    <div *ngFor="let env of container?.env; trackBy: getEnvVarID">
-      <ng-container *ngIf="!isSecret(env) && !isConfigMap(env)">
-        <kd-property>
-          <div
-            key
-            fxLayout
-          >
-            {{ env.name }}
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div value>{{ env.value || '-' }}</div>
-        </kd-property>
+    <mat-table 
+      [dataSource]="dataSource" 
+      [trackBy]="getEnvVarID" 
+      class="mat-elevation-z1"
+    >
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+        <mat-cell 
+          *matCellDef="let element" 
+          class="col-stretch-m"
+        >
+          {{element.name}}
+        </mat-cell>
       </ng-container>
-
-      <ng-container *ngIf="isSecret(env)">
-        <kd-hidden-property>
-          <div
-            key
-            fxLayout
-          >
-            <a
-              [routerLink]="getEnvSecretHref(env.valueFrom.secretKeyRef)"
-              queryParamsHandling="preserve"
-              (click)="$event.stopPropagation()"
-            >
-              {{ env.name }}
-            </a>
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div
-            whenVisible
-            class="kd-code-block"
-          >
-            {{ decoder.base64(env.value) }}
-          </div>
-          <div
-            whenHidden
-            i18n
-          >
-            {{ decoder.base64(env.value).length }} bytes
-          </div>
-        </kd-hidden-property>
+    
+      <ng-container matColumnDef="value">
+        <mat-header-cell *matHeaderCellDef>Value</mat-header-cell>
+        <mat-cell 
+          *matCellDef="let element" 
+          class="col-stretch-m"
+        >
+          <ng-container *ngIf="isSecret(element)">
+            <kd-hidden-property>
+              <div key fxLayout>
+                <a 
+                  [routerLink]="getEnvSecretHref(element.valueFrom.secretKeyRef)" 
+                  queryParamsHandling="preserve"
+                >
+                  {{element.name}}
+                </a>
+                <mat-icon 
+                  matTooltip="Environment variable" 
+                  i18n-matTooltip class="kd-env-variable-icon"
+                >
+                  public
+                </mat-icon>
+              </div>
+              <div 
+                whenVisible 
+                class="kd-code-block"
+              >
+                {{ decoder.base64(element.value) }}
+              </div>
+              <div 
+                whenHidden 
+                i18n
+              >
+                {{ decoder.base64(element.value).length }} bytes
+              </div>
+            </kd-hidden-property>
+          </ng-container>
+    
+          <ng-container *ngIf="isConfigMap(element)">
+            <kd-hidden-property>
+              <div key fxLayout>
+                <a 
+                  [routerLink]="getEnvConfigMapHref(element.valueFrom.configMapKeyRef)" 
+                  queryParamsHandling="preserve"
+                >
+                  {{ element.name }}
+                </a>
+                <mat-icon 
+                  matTooltip="Environment variable" 
+                  i18n-matTooltip class="kd-env-variable-icon"
+                >
+                  public
+                </mat-icon>
+              </div>
+              <div 
+                whenVisible 
+                class="kd-code-block"
+              >
+                {{ element.value }}
+              </div>
+              <div 
+                whenHidden 
+                i18n
+              >
+                {{ element.value.length }} bytes
+              </div>
+            </kd-hidden-property>
+          </ng-container>
+    
+          <ng-container 
+            *ngIf="!isSecret(element) && !isConfigMap(element)">
+            {{ element.value }}
+          </ng-container>
+        </mat-cell>
       </ng-container>
-
-      <ng-container *ngIf="isConfigMap(env)">
-        <kd-hidden-property>
-          <div
-            key
-            fxLayout
-          >
-            <a
-              [routerLink]="getEnvConfigMapHref(env.valueFrom.configMapKeyRef)"
-              queryParamsHandling="preserve"
-              (click)="$event.stopPropagation()"
-            >
-              {{ env.name }}
-            </a>
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div
-            whenVisible
-            class="kd-code-block"
-          >
-            {{ env.value }}
-          </div>
-          <div
-            whenHidden
-            i18n
-          >
-            {{ env.value.length }} bytes
-          </div>
-        </kd-hidden-property>
-      </ng-container>
-    </div>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
 
     <kd-property
       *ngIf="container?.commands?.length"
