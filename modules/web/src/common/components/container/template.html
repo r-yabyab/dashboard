@@ -163,6 +163,8 @@ limitations under the License.
       Environment Variables
     </div>
 
+<kd-env-var-list [envVarList]="container.env" [id]="container.name + '-env-vars'"></kd-env-var-list>
+
     <mat-table 
       [dataSource]="dataSource" 
       [trackBy]="getEnvVarID" 

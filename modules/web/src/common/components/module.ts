@@ -105,6 +105,7 @@ import {UploadFileComponent} from './uploadfile/component';
 import {VolumeMountComponent} from './volumemount/component';
 import {WorkloadStatusComponent} from './workloadstatus/component';
 import {ZeroStateComponent} from './zerostate/component';
+import { EnvVarListComponent } from './container/env-var-list/env-var-list.component';
 
 const components = [
   ActionbarDetailActionsComponent,
@@ -194,6 +195,7 @@ const components = [
   RoleBindingListComponent,
   SubjectListComponent,
   VolumeMountComponent,
+  EnvVarListComponent
 ];
 
 @NgModule({

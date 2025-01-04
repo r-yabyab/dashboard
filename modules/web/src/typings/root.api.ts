@@ -184,6 +184,10 @@ export interface PodList extends ResourceList {
   cumulativeMetrics: Metric[] | null;
 }
 
+export interface EnvVarList extends ResourceList {
+  items: EnvVar[];
+}
+
 export interface ReplicaSetList extends ResourceList {
   cumulativeMetrics: Metric[] | null;
   replicaSets: ReplicaSet[];
@@ -871,7 +875,7 @@ export interface SecretKeyRef {
   key: string;
 }
 
-export interface EnvVar {
+export interface EnvVar extends Resource {
   name: string;
   value: string;
   valueFrom: EnvVarSource;
